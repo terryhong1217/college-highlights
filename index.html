@@ -76,10 +76,10 @@ button{font-family:inherit}
 .chips span{color:var(--muted)}
 .chip{min-height:34px;padding:0 14px;border-radius:999px;border:1.5px solid var(--teal-line);background:#fff;color:var(--teal);font-size:14px;font-weight:500;cursor:pointer}
 .cat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
-.cat{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:112px;padding:14px;border-radius:14px;cursor:pointer;border:2px solid transparent;text-align:left}
+.cat{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:88px;padding:14px;border-radius:14px;cursor:pointer;border:2px solid transparent;text-align:left}
 .cat:nth-child(odd){background:#FFF5E1} .cat:nth-child(even){background:#E6F2FB}
 .cat[aria-selected="true"]{border-color:var(--accent);box-shadow:0 4px 14px rgba(240,122,31,.18)}
-.cat .txt{display:flex;flex-direction:column;gap:6px}
+.cat .txt{display:flex;flex-direction:column;gap:4px}
 .cat .name{font-size:18px;font-weight:700;color:var(--navy)}
 .cat[aria-selected="true"] .name{color:var(--accent-text)}
 .cat .count{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-top:2px}
@@ -110,6 +110,8 @@ button{font-family:inherit}
 .list-inner{padding-top:56px;padding-bottom:72px;display:flex;flex-direction:column;gap:28px}
 .list-head{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
 .list-head h2{margin:0;font-size:28px;font-weight:700;color:var(--navy)}
+.list-desc{margin:0;max-width:720px;font-size:15.5px;line-height:1.8;color:#4A5562}
+.list-desc:empty{display:none}
 .list-meta{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px;font-size:14px;color:#4A5562}
 .copy-btn{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 14px;border-radius:999px;border:1px solid #9CC6E4;background:#fff;color:var(--link);font-size:13px;font-weight:500;cursor:pointer}
 .notice{background:#fff;border:1.5px dashed #9CC6E4;border-radius:16px;padding:32px 24px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:20px;color:#4A5562;font-size:15px;line-height:1.8}
@@ -164,18 +166,6 @@ footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;ju
 </style>
 </head>
 <body>
-<header>
-  <div class="topbar">
-    <div class="links"><a href="https://www.104.com.tw/">人力銀行</a><a href="https://www.104.com.tw/campus/">104Campus</a></div>
-    <a class="logo" href="https://guide.104.com.tw/career/"><b>104</b><span>升學就業地圖</span></a>
-    <span></span>
-  </div>
-  <nav class="mainnav" aria-label="主選單">
-    <a href="https://guide.104.com.tw/career/">首頁</a>
-    <a href="https://guide.104.com.tw/career/college-brand/">大學品牌力</a>
-    <a href="#" aria-current="page">大學亮點</a>
-  </nav>
-</header>
 
 <main>
   <section class="hero">
@@ -253,6 +243,7 @@ footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;ju
     <div class="wrap list-inner">
       <div class="list-head">
         <h2 id="listTitle">最新亮點文章</h2>
+        <p class="list-desc" id="listDesc"></p>
         <div class="list-meta"><span id="listMeta"></span><button type="button" class="copy-btn" id="copy"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.1 0l3-3a5 5 0 0 0-7.1-7.1l-1 1"/><path d="M14 11a5 5 0 0 0-7.1 0l-3 3a5 5 0 0 0 7.1 7.1l1-1"/></svg><span>複製此頁連結</span></button></div>
       </div>
       <div class="notice" id="notice" hidden></div>
@@ -277,12 +268,12 @@ footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;ju
   /* ================================ */
 
   var CATS = [
-    { id: 'all',  name: '全部文章', desc: '各校最新亮點表現' },
-    { id: 'intl', name: '國際交流', desc: '境外生在台求學、海外見習與圓夢' },
-    { id: 'usr',  name: 'USR計畫',  desc: 'USR 與在地創生' },
-    { id: 'net0', name: '淨零永續', desc: '淨零、循環經濟與綠能研究' },
-    { id: 'ai',   name: 'AI發展',   desc: '半導體人才培育、AI 走進照護現場' },
-    { id: 'talk', name: '學校專訪', desc: '校長、師生與校友專訪' }
+    { id: 'all',  name: '全部文章', desc: '彙整各大學在國際交流、社會實踐、淨零永續與 AI 發展的亮點，以及學校專訪。' },
+    { id: 'intl', name: '國際交流', desc: '台灣學生到海外交換實習、外籍生來台就學、學校跨國合作與姊妹校交流，看大學如何培養學生的國際移動力。' },
+    { id: 'usr',  name: 'USR計畫',  desc: '大學走出校園、深耕在地，透過地方創生、偏鄉教育、社區與部落合作及高齡關懷，實踐大學社會責任。' },
+    { id: 'net0', name: '淨零永續', desc: '聚焦綠領人才培育，以及淨零減碳、循環經濟與綠能研究，推動永續校園行動。' },
+    { id: 'ai',   name: 'AI發展',   desc: '從半導體與晶片人才培育、AI 課程與跨域應用，看大學如何接軌科技趨勢。' },
+    { id: 'talk', name: '學校專訪', desc: '走進校園，透過校長分享辦學理念、學校特色與學習路徑，更認識各大專校院。' }
   ];
   var NAME_TO_ID = {}; CATS.forEach(function (c) { NAME_TO_ID[c.name] = c.id; });
 
@@ -390,8 +381,8 @@ footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;ju
       var on = c.id === state.cat && !state.school && !state.text;
       var b = el('button', { type: 'button', className: 'cat', role: 'tab', 'aria-selected': on ? 'true' : 'false' }, [
         el('span', { className: 'txt' }, [
-          el('span', {}, [el('span', { className: 'name', text: c.name }), el('span', { className: 'count', text: n ? n + ' 篇' : '近期無新文章' })]),
-          el('span', { className: 'desc', text: c.desc })
+          el('span', { className: 'name', text: c.name }),
+          el('span', { className: 'count', text: n ? n + ' 篇' : '近期無新文章' })
         ]),
         el('span', { className: 'art' }, [svgArt(c.id, 56)])
       ]);
@@ -490,7 +481,7 @@ footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;ju
 
   /* ---------- 文章列表 ---------- */
   function renderList() {
-    var items, title, empty = '';
+    var items, title, empty = '', desc = '';
     if (state.school) {
       items = data.articles.filter(function (a) { return a.school === state.school; });
       title = state.school + ' 的亮點文章';
@@ -501,14 +492,15 @@ footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;ju
       title = '「' + state.text + '」的搜尋結果';
       if (!items.length) empty = '找不到「' + state.text + '」的相關文章，請試試其他校名或簡稱。';
     } else if (state.cat === 'all') {
-      items = data.articles; title = '最新亮點文章';
+      items = data.articles; title = '最新亮點文章'; desc = CATS[0].desc;
     } else {
       var c = CATS.filter(function (x) { return x.id === state.cat; })[0];
       items = data.articles.filter(function (a) { return catIds(a).indexOf(state.cat) !== -1; });
-      title = c.name;
+      title = c.name; desc = c.desc;
       if (!items.length) empty = '「' + c.name + '」近期沒有新文章，職場力上架相關文章後會自動出現在這裡。';
     }
     $('listTitle').textContent = title;
+    $('listDesc').textContent = desc;
     var notice = $('notice');
     if (empty) {
       notice.textContent = '';
