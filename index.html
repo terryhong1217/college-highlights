@@ -334,7 +334,7 @@ footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;ju
   function media(a, isFeat) {
     var ids = catIds(a);
     var key = ids[0] || 'all';
-    var box = el('a', { className: 'media', href: a.url, tabindex: '-1', 'aria-hidden': 'true', target: '_blank', rel: 'noopener' });
+    var box = el('div', { className: 'media' });
     box.style.background = TINT[key];
     var fb = el('span', { className: 'fallback' }, [svgArt(key, isFeat ? 120 : 84)]);
     box.appendChild(fb);
