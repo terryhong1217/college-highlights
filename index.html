@@ -58,6 +58,8 @@ button{font-family:inherit}
 .tag-link:hover{background:var(--teal);color:#fff;border-color:var(--teal)}
 .tag-link::after{content:"›";font-size:14px;line-height:1}
 .slide-school{font-size:15px;font-weight:700;color:var(--link);text-decoration:none}
+.slide-school small{font-weight:500;font-size:12px;margin-left:6px}
+span.school,span.slide-school{color:var(--navy)}
 .slide-school:hover{color:#173E7A}
 .slide h2{margin:0;font-size:23px;line-height:1.5;font-weight:900;color:var(--navy)}
 .slide p{margin:0;font-size:17px;line-height:1.85;color:var(--body);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
@@ -302,7 +304,6 @@ body.mode-compact .topics{margin-top:0}
     talk: '<rect x="22" y="8" width="20" height="32" rx="10" fill="#F5A15A" stroke="#1D3A63" stroke-width="2.5"/><line x1="26" y1="18" x2="38" y2="18" stroke="#1D3A63" stroke-width="2"/><line x1="26" y1="25" x2="38" y2="25" stroke="#1D3A63" stroke-width="2"/><path d="M14 30 C14 42 22 48 32 48 C42 48 50 42 50 30" fill="none" stroke="#1D3A63" stroke-width="2.5" stroke-linecap="round"/><line x1="32" y1="48" x2="32" y2="56" stroke="#1D3A63" stroke-width="2.5"/><line x1="22" y1="56" x2="42" y2="56" stroke="#1D3A63" stroke-width="2.5" stroke-linecap="round"/>'
   };
   var TINT = { intl: '#DCEEFA', usr: '#FFE6DC', net0: '#E3F4EA', ai: '#FFF0D6', talk: '#E6F2FB', all: '#FFF5E1' };
-  var BRAND_HOME = 'https://guide.104.com.tw/career/college-brand/';
 
   var data = { articles: [], schools: [] };
   var state = { cat: 'all', school: null, text: '', shown: PAGE_SIZE, slide: 0, compact: false };
@@ -365,10 +366,13 @@ body.mode-compact .topics{margin-top:0}
     window.gtag('js', new Date()); window.gtag('config', GA_ID);
   }
 
+  // 校名連到該校在升學就業地圖的學校頁；還沒有網址的學校只顯示文字
   function schoolLink(a, cls) {
     if (!a.school) return null;
-    var link = el('a', { className: cls || 'school', href: a.brandUrl || BRAND_HOME, target: '_blank', rel: 'noopener' }, [a.school, cls ? null : el('small', { text: '看品牌力 →' })]);
-    link.addEventListener('click', function () { track('brand_click', { school: a.school }); });
+    if (!a.brandUrl) return el('span', { className: cls || 'school', text: a.school });
+    var link = el('a', { className: cls || 'school', href: a.brandUrl, target: '_blank', rel: 'noopener', title: '到 104升學就業地圖看' + a.school },
+      [a.school, el('small', { text: '學校介紹 →' })]);
+    link.addEventListener('click', function () { track('school_page_click', { school: a.school }); });
     return link;
   }
   function sourceLink(a, cls) {
