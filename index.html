@@ -47,7 +47,7 @@ button{font-family:inherit}
 
 /* 精選輪播（第一視覺）：左圖右文，淺色系 */
 .stage{position:relative;z-index:2;margin-top:-44px}
-.slide{position:relative;display:grid;grid-template-columns:52fr 48fr;min-height:400px;border-radius:24px;overflow:hidden;background:#fff;border:1px solid #F0E3D2;box-shadow:0 12px 32px rgba(90,60,20,.12)}
+.slide{position:relative;touch-action:pan-y;display:grid;grid-template-columns:52fr 48fr;min-height:400px;border-radius:24px;overflow:hidden;background:#fff;border:1px solid #F0E3D2;box-shadow:0 12px 32px rgba(90,60,20,.12)}
 .slide-pic{position:relative;min-height:100%;background:#FFF5E1}
 .slide-pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%}
 .slide-pic .fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
@@ -104,6 +104,10 @@ button{font-family:inherit}
 .cat .count{font-size:13px;font-weight:500;color:var(--muted)}
 .cat .art{flex:none;width:56px;height:56px}
 .cat-dock{display:none}
+.where{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin:0 0 18px;padding:12px 16px;border-radius:12px;background:#FFF5E1;border:1px solid #F0E3D2;font-size:14px;color:var(--muted)}
+.where a{color:var(--link)}
+.where strong{color:var(--navy)}
+.where-back{display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:0 14px;border-radius:999px;border:1.5px solid var(--accent);background:#fff;color:var(--accent-text);font-size:14px;font-weight:700;cursor:pointer}
 
 /* 文章列表 */
 .list-sec{background:var(--sky);margin-top:48px}
@@ -123,7 +127,9 @@ button{font-family:inherit}
 .card:hover .media img{transform:scale(1.03)}
 .media .fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
 .media .chip-on{position:absolute;left:14px;bottom:14px;display:flex;flex-wrap:wrap;gap:6px}
-.media .chip-on span{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.94);color:var(--teal)}
+.media .chip-on a{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.94);color:var(--teal);text-decoration:none;display:inline-flex;align-items:center;gap:3px}
+.media .chip-on a::after{content:"›";font-size:13px;line-height:1}
+.media .chip-on a:hover{background:var(--teal);color:#fff}
 .new{position:absolute;left:14px;top:14px;padding:3px 10px;border-radius:6px;background:var(--accent-dark);color:#fff;font-size:12px;font-weight:900;letter-spacing:.06em}
 .card-body{padding:22px 26px 20px;display:flex;flex-direction:column;gap:10px;flex:1}
 .meta-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
@@ -139,7 +145,18 @@ button{font-family:inherit}
 footer{background:var(--navy);color:#D3DCE8;font-size:13px}
 footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
 
+/* 主題模式：點了主題後只顯示主題按鈕與文章；按回頁首時再顯示標題與搜尋，但不顯示輪播 */
+body.mode-focus #featured{display:none}
+body.mode-compact .top,body.mode-compact .panel{display:none}
+body.mode-focus .stage{margin-top:-44px}
+body.mode-focus .panel{margin-top:0}
+body.mode-compact .stage{margin-top:0;padding-top:24px}
+body.mode-compact .topics{margin-top:0}
+.to-top{position:fixed;right:24px;bottom:24px;z-index:20;display:inline-flex;align-items:center;gap:6px;height:48px;padding:0 18px;border:none;border-radius:999px;background:var(--accent-dark);color:#fff;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.18);opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .2s,transform .2s}
+.to-top.show{opacity:1;transform:none;pointer-events:auto}
+
 @media (max-width:900px){
+  .to-top{right:16px;bottom:16px;padding:0 14px;height:44px}
   .top .deco{display:none}
   .top h1{font-size:26px}
   .top-inner{padding-top:16px;padding-bottom:56px}
@@ -221,6 +238,10 @@ footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;ju
     </div>
 
     <section class="topics" aria-labelledby="topicsTitle">
+      <nav class="where" id="where" aria-label="目前位置" hidden>
+        <span><a href="#" id="whereHome">大學亮點</a><span aria-hidden="true">　›　</span><strong id="whereNow"></strong></span>
+        <button type="button" class="where-back" id="whereBack"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>回大學亮點首頁</button>
+      </nav>
       <h2 class="sec-title" id="topicsTitle">從主題看大學特色</h2>
       <div class="cat-row" id="cats" role="group" aria-labelledby="topicsTitle"></div>
     </section>
@@ -247,6 +268,8 @@ footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;ju
   </section>
 </main>
 
+<button type="button" class="to-top" id="toTop" aria-label="回到頁首"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>回頁首</button>
+
 <footer><div class="wrap"><span>文章內容由 104職場力〈大學校園〉提供</span><span>104 Corporation © <span id="year"></span></span></div></footer>
 <script>
 (function () {
@@ -256,7 +279,7 @@ footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;ju
   var GA_ID = '';            // Google Analytics 評估 ID（G- 開頭），沒有就留空
   var PAGE_SIZE = 9;         // 每次顯示幾篇
   var NEW_DAYS = 7;          // 幾天內算新文章
-  var SLIDE_SECONDS = 6;     // 精選輪播切換秒數
+  var SLIDE_SECONDS = 8;     // 精選輪播切換秒數
   var FEATURED_MAX = 5;      // 輪播固定幾則：先放勾選精選的，不足就用最新文章補滿
   /* ================================ */
 
@@ -282,8 +305,9 @@ footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;ju
   var BRAND_HOME = 'https://guide.104.com.tw/career/college-brand/';
 
   var data = { articles: [], schools: [] };
-  var state = { cat: 'all', school: null, text: '', shown: PAGE_SIZE, slide: 0 };
+  var state = { cat: 'all', school: null, text: '', shown: PAGE_SIZE, slide: 0, compact: false };
   var timer = null;
+  var userControls = false;   // 讀者摸過輪播後就不再自動切換，由讀者自己控制
   var $ = function (id) { return document.getElementById(id); };
 
   /* ---------- 小工具 ---------- */
@@ -375,17 +399,7 @@ footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;ju
       clearInterval(timer);                       // 讀摘要時暫停自動輪播
     });
     var meta = el('div', { className: 'slide-meta' }, [el('span', { className: 'badge-feat', text: a.featured ? '精選文章' : '最新文章' })]);
-    a.cats.forEach(function (c) {
-      var id = NAME_TO_ID[c];
-      var t = el('a', { className: 'tag-link', href: '#' + id, title: '看更多「' + c + '」文章', text: c });
-      t.addEventListener('click', function (e) {
-        e.preventDefault();
-        setCat(id);
-        track('select_category', { category: c, from: 'carousel' });
-        $('listTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-      meta.appendChild(t);
-    });
+    a.cats.forEach(function (c) { meta.appendChild(topicLink(c, 'tag-link')); });
     slide.appendChild(el('div', { className: 'slide-body' }, [
       meta,
       schoolLink(a, 'slide-school'),
@@ -408,8 +422,48 @@ footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;ju
   }
   function restartTimer() {
     clearInterval(timer);
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || featList().length < 2) return;
+    if (userControls || window.matchMedia('(prefers-reduced-motion: reduce)').matches || featList().length < 2) return;
     timer = setInterval(function () { state.slide++; renderFeatured(); }, SLIDE_SECONDS * 1000);
+  }
+
+  /* ---------- 版面模式 ---------- */
+  // 首頁：橫幅＋輪播＋搜尋＋主題＋文章
+  // 選了主題、搜尋學校：不顯示輪播；從主題進入時再隱藏橫幅與搜尋（compact），按回頁首才顯示
+  function applyMode() {
+    var focus = state.cat !== 'all' || !!state.school || !!state.text;
+    document.body.classList.toggle('mode-focus', focus);
+    document.body.classList.toggle('mode-compact', focus && state.compact);
+    if (focus) clearInterval(timer); else restartTimer();
+  }
+  function toTop(smooth) { window.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'auto' }); }
+  // 每次切換主題或搜尋都記成瀏覽紀錄的一步，按瀏覽器「上一頁」就回到前一個畫面
+  function hashFor(cat) { return location.pathname + location.search + (cat === 'all' ? '' : '#' + cat); }
+  function navigate(next, push) {
+    state.cat = next.cat || 'all'; state.school = next.school || null; state.text = next.text || '';
+    state.compact = !!next.compact; state.shown = PAGE_SIZE;
+    var snap = { cat: state.cat, school: state.school, text: state.text, compact: state.compact };
+    if (push) history.pushState(snap, '', hashFor(state.cat)); else history.replaceState(snap, '', hashFor(state.cat));
+    $('q').value = state.school || state.text || ''; $('clear').hidden = !$('q').value; hideSugs();
+    renderCats(); renderList(); applyMode(); renderWhere();
+  }
+  function renderWhere() {
+    var c = CATS.filter(function (x) { return x.id === state.cat; })[0];
+    var now = state.school ? state.school : state.text ? '搜尋「' + state.text + '」' : c ? c.name : '';
+    $('where').hidden = !now;
+    $('whereNow').textContent = now;
+  }
+  function openTopic(id, from) {
+    navigate({ cat: id, compact: true }, true);
+    toTop(false);
+    var c = CATS.filter(function (x) { return x.id === id; })[0];
+    if (c) track('select_category', { category: c.name, from: from || 'topics' });
+  }
+  function goHome() { navigate({}, true); toTop(false); }
+  function topicLink(name, cls) {
+    var id = NAME_TO_ID[name];
+    var t = el('a', { className: cls, href: '#' + id, title: '看更多「' + name + '」文章', text: name });
+    t.addEventListener('click', function (e) { e.preventDefault(); openTopic(id, cls); });
+    return t;
   }
 
   /* ---------- 從主題看大學特色 ---------- */
@@ -422,21 +476,10 @@ footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;ju
         el('span', { className: 'txt' }, [el('span', { className: 'name', text: c.name }), el('span', { className: 'count', text: n ? n + ' 篇' : '近期無新文章' })]),
         el('span', { className: 'art' }, [svgArt(c.id, 56)])
       ]);
-      b.addEventListener('click', function () {
-        setCat(on ? 'all' : c.id);
-        if (!on) track('select_category', { category: c.name });
-        if (!on && window.matchMedia('(max-width: 900px)').matches) $('listTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
+      b.addEventListener('click', function () { if (on) goHome(); else openTopic(c.id, 'topics'); });
       box.appendChild(b);
     });
   }
-  function setCat(id) {
-    state.cat = id; state.school = null; state.text = ''; state.shown = PAGE_SIZE;
-    $('q').value = ''; $('clear').hidden = true; hideSugs();
-    history.replaceState(null, '', location.pathname + location.search + (id === 'all' ? '' : '#' + id));
-    renderCats(); renderList();
-  }
-
   /* ---------- 搜尋 ---------- */
   function matchSchools(q) {
     var n = norm(q); if (!n) return [];
@@ -465,20 +508,16 @@ footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;ju
   }
   function hideSugs() { $('sugs').hidden = true; }
   function pickSchool(name) {
-    state.school = name; state.text = ''; state.shown = PAGE_SIZE;
-    $('q').value = name; $('clear').hidden = false; hideSugs();
-    history.replaceState(null, '', location.pathname + location.search);
+    navigate({ school: name }, true);
     track('search', { search_term: name });
-    renderCats(); renderList();
     $('listTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
   function commitSearch() {
     var q = $('q').value.trim(); if (!q) return;
     var list = matchSchools(q);
     if (list.length) { pickSchool(list[0].name); return; }
-    state.school = null; state.text = q; state.shown = PAGE_SIZE; hideSugs();
+    navigate({ text: q }, true);
     track('search', { search_term: q });
-    renderCats(); renderList();
     $('listTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
@@ -487,7 +526,7 @@ footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;ju
     var m = el('div', { className: 'media' });
     m.appendChild(picture(a, 84, 'tint'));
     if (isNew(a)) m.appendChild(el('span', { className: 'new', text: 'NEW' }));
-    m.appendChild(el('div', { className: 'chip-on' }, a.cats.map(function (c) { return el('span', { text: c }); })));
+    m.appendChild(el('div', { className: 'chip-on' }, a.cats.map(function (c) { return topicLink(c, 'chip-link'); })));
     return el('article', { className: 'card' }, [
       m,
       el('div', { className: 'card-body' }, [
@@ -510,7 +549,9 @@ footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;ju
       title = '「' + state.text + '」的搜尋結果';
       if (!items.length) empty = '找不到「' + state.text + '」的相關文章，請試試其他校名或簡稱。';
     } else if (state.cat === 'all') {
-      items = data.articles; title = '最新亮點文章'; desc = ALL_DESC;
+      var inSlides = featList().map(function (x) { return x.url; });
+      items = data.articles.filter(function (x) { return inSlides.indexOf(x.url) === -1; });   // 首頁列表不重複輪播中的文章
+      title = '更多亮點文章'; desc = ALL_DESC;
     } else {
       var c = CATS.filter(function (x) { return x.id === state.cat; })[0];
       items = data.articles.filter(function (a) { return catIds(a).indexOf(state.cat) !== -1; });
@@ -562,12 +603,30 @@ footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;ju
     if (e.key === 'Escape') hideSugs();
   });
   $('go').addEventListener('click', commitSearch);
-  $('clear').addEventListener('click', function () { setCat('all'); $('q').focus(); });
-  $('showAll').addEventListener('click', function () { setCat('all'); });
+  $('clear').addEventListener('click', function () { navigate({}, true); $('q').focus(); });
+  $('showAll').addEventListener('click', goHome);
+  $('whereBack').addEventListener('click', goHome);
+  $('whereHome').addEventListener('click', function (e) { e.preventDefault(); goHome(); });
+  // 回頁首：主題模式下改為顯示標題與搜尋，輪播仍不顯示
+  $('toTop').addEventListener('click', function () { state.compact = false; applyMode(); toTop(true); track('back_to_top', {}); });
+  window.addEventListener('scroll', function () { $('toTop').classList.toggle('show', window.scrollY > 500); }, { passive: true });
   document.addEventListener('click', function (e) { if (!e.target.closest('.search-box')) hideSugs(); });
   $('more').addEventListener('click', function () { state.shown += PAGE_SIZE; renderList(); });
   $('prev').addEventListener('click', function () { state.slide--; renderFeatured(); restartTimer(); });
   $('next').addEventListener('click', function () { state.slide++; renderFeatured(); restartTimer(); });
+  // 手機：左右滑動切換輪播；手指一碰到輪播就停止自動播放
+  var sx = 0, sy = 0;
+  $('slide').addEventListener('touchstart', function (e) {
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+    userControls = true; clearInterval(timer);
+  }, { passive: true });
+  $('slide').addEventListener('touchend', function (e) {
+    var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      state.slide += dx < 0 ? 1 : -1; renderFeatured();
+      track('carousel_swipe', {});
+    }
+  }, { passive: true });
   $('featured').addEventListener('mouseenter', function () { clearInterval(timer); });
   $('featured').addEventListener('mouseleave', restartTimer);
   $('featured').addEventListener('focusin', function () { clearInterval(timer); });
@@ -577,9 +636,12 @@ footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;ju
     if (navigator.clipboard) navigator.clipboard.writeText(location.href).then(done, function () {}); else done();
     track('share_link', { category: state.cat });
   });
-  window.addEventListener('hashchange', function () {
-    var id = location.hash.slice(1);
-    if (CATS.some(function (c) { return c.id === id; })) setCat(id);
+  // 按瀏覽器上一頁／下一頁，或手動改網址的 #主題
+  window.addEventListener('popstate', function (e) {
+    var snap = e.state;
+    if (!snap) { var id = location.hash.slice(1); snap = { cat: CATS.some(function (c) { return c.id === id; }) ? id : 'all' }; }
+    navigate(snap, false);
+    toTop(false);
   });
   $('year').textContent = new Date().getFullYear();
 
@@ -611,8 +673,8 @@ footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;ju
         .sort(function (x, y) { return x.date < y.date ? 1 : x.date > y.date ? -1 : 0; });
       $('status').hidden = true;
       var h = location.hash.slice(1);
-      if (CATS.some(function (c) { return c.id === h; })) state.cat = h;
-      renderChips(); renderFeatured(); renderCats(); renderList(); restartTimer();
+      renderChips(); renderFeatured();
+      navigate({ cat: CATS.some(function (c) { return c.id === h; }) ? h : 'all' }, false);   // 從分享連結進來：保留標題與搜尋，只隱藏輪播
     })
     .catch(function () { $('status').textContent = '文章暫時無法載入，請稍後重新整理頁面。'; });
 })();
